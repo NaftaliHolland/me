@@ -1,0 +1,10 @@
+---
+import type { Section } from '../config';
+interface Props { section: Section; count: number }
+const { section, count, more } = Astro.props;
+---
+<section id={section.key} class="scroll-mt-20">
+  <h2 class="text-sm font-normal text-primary">{section.label}</h2>
+  <ul class="mt-4 -my-2"><slot /></ul>
+  {more && <a href={`/${section.key}`} class="mt-4 inline-block text-sm text-muted underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent">View all {section.label.toLowerCase()} ({count})</a>}
+</section>

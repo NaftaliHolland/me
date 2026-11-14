@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import Intro from '../components/Intro.astro';
+import Section from '../components/Section.astro';
+import Entry from '../components/Entry.astro';
+import { sections, site } from '../config';
+import { getEntries } from '../lib/content';
+
+const blocks = await Promise.all(
+  sections.map(async (section) => {
+    const all = await getEntries(section.collection);
+    const featured = all.filter((e) => e.data.featured);
+    return { section, count: all.length, entries: (featured.length ? featured : all).slice(0, 6) };
+  }),
+);
+---
+<Base>
+  <Intro />
+  <section id="about" class="scroll-mt-8 mt-16">
+    <h2 class="text-sm font-normal text-primary">About me</h2>
+    <p class="mt-4 max-w-prose text-muted">
+      I'm a software developer based in Nairobi, Kenya, who enjoys building things for the web. My main tools are Python and Django on the backend, and TypeScript and React on the frontend. I currently work as a full-stack developer at <a href="https://softspin.co.ke" target="_blank" class="text-ink decoration-rule underline hover:decoration-accent hover:text-accent">Softspin Technologies.↗</a> Beyond software, I'm interested in philosophy, art, and chess. I also enjoy exploring ideas through side projects, experimenting with new things, and contributing to open source whenever I can.
+    </p>
+    <a href="/resume" class="mt-4 inline-block text-sm text-ink underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent">Read my resume</a>
+  </section>
+  <div class="mt-16 space-y-12">
+    {blocks.map(({ section, count, entries }) => (
+    <Section section={section} count={count} more={count > entries.length}>
+        {entries.map((entry) => <Entry entry={entry} section={section} />)}
+      </Section>
+    ))}
+  </div>
+</Base>

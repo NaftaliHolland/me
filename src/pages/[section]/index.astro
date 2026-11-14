@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import Entry from '../../components/Entry.astro';
+import { sections } from '../../config';
+import { getEntries } from '../../lib/content';
+
+export function getStaticPaths() {
+  return sections.map((section) => ({ params: { section: section.key }, props: { section } }));
+}
+const { section } = Astro.props;
+const entries = await getEntries(section.collection);
+---
+<Base title={section.label}>
+  <a href="/" class="text-sm text-muted hover:text-ink">← Home</a>
+  <h1 class="mt-6 text-[1.7rem] font-semibold tracking-tight">{section.label}</h1>
+  <ul class="mt-8 -my-2">{entries.map((entry) => <Entry entry={entry} section={section} />)}</ul>
+</Base>

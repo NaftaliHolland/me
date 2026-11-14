@@ -1,0 +1,18 @@
+---
+import { site } from '../config';
+---
+<section>
+  <h1 class="text-balance text-[1.55rem] font-semibold leading-snug tracking-tight text-primary sm:text-[1.7rem]">{site.tagline}</h1>
+  <!--<p class="mt-5 max-w-prose text-muted">
+    {site.bio}
+</p>-->
+
+  <p class="mt-5 max-w-prose text-muted">
+    I'm a full-stack software developer based in Nairobi, Kenya, building web applications with Python, Django, TypeScript, and React. I currently work as a full-stack developer at <a href="https://softspin.co.ke" target="_blank" class="text-ink decoration-rule underline hover:decoration-accent hover:text-accent">Softspin Technologies.↗</a>
+  </p>
+  <ul class="mt-8 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+    {site.links.map((l) => (
+      <li><a href={l.url} rel="me noopener" class="text-ink underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent">{l.label} ↗</a></li>
+    ))}
+  </ul>
+</section>

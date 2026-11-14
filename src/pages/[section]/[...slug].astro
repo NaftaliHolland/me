@@ -1,0 +1,48 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { sections } from '../../config';
+import { getEntries, dateLabel } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(
+    sections.map(async (section) =>
+      (await getEntries(section.collection)).map((entry) => ({
+        params: { section: section.key, slug: entry.id },
+        props: { section, entry },
+      })),
+    ),
+  );
+  return paths.flat();
+}
+const { section, entry } = Astro.props;
+const { title, description, tags, links, cover, coverAlt } = entry.data;
+const author = (entry.data as { author?: string }).author;
+const { Content } = await render(entry);
+---
+<Base title={title} description={description}>
+  <article>
+    <a href={`/#${section.key}`} class="text-sm text-muted hover:text-ink">← {section.label}</a>
+    <h1 class="mt-6 text-balance text-[1.7rem] font-semibold leading-tight tracking-tight">{title}</h1>
+    <p class="mt-3 text-muted">{description}</p>
+    <p class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-faint">
+      <time class="tabular-nums">{dateLabel(entry.data, section.range)}</time>
+      {author && <span>{author}</span>}
+      {tags.length > 0 && <span>{tags.join(', ')}</span>}
+    </p>
+    {links.length > 0 && (
+      <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+        {links.map((l) => (
+        <li><a
+        href={l.url}
+        rel="noopener"
+        target={l.external ? "_blank" : undefined}
+        class="text-ink underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent"
+      >{l.label} {l.external ? "↗" : undefined}</a>
+        </li>))}
+        </ul>
+    )}
+    {cover && <img src={cover} alt={coverAlt} class="mt-10 h-auto w-full rounded" />}
+    <div class="prose mt-10"><Content /></div>
+  </article>
+</Base>

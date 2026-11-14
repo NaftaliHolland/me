@@ -1,0 +1,30 @@
+---
+import { dateLabel, entryHref } from '../lib/content';
+import type { Section } from '../config';
+
+interface Props { entry: any; section: Section }
+const { entry, section } = Astro.props;
+const { title, description, summary, tags, links } = entry.data;
+---
+<li class="border-b border-faint/50 last:border-b-0">
+  <details class="group/entry">
+    <summary class="flex cursor-pointer flex-col gap-x-8 py-2 sm:flex-row sm:items-baseline sm:justify-between">
+      <span class="min-w-0">
+        <span class="font-medium text-ink group-hover/entry:text-accent mr-4">{title}</span>
+        <span class="text-muted">{description}</span>
+      </span>
+      <span class="mt-0.5 shrink-0 text-sm tabular-nums text-faint sm:mt-0 ml-auto">{dateLabel(entry.data, section.range)}</span>
+        <svg aria-hidden="true" viewBox="0 0 16 16" class="-mt-px ml-0.5 inline-block size-3 text-faint motion-safe:transition-transform group-open/entry:rotate-90 text-lg shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5 10.5 8 6 12.5" /></svg>
+    </summary>
+    <div class="max-w-prose pb-3 pt-1 text-muted">
+      {summary && <p>{summary}</p>}
+      {tags.length > 0 && <p class="mt-2 text-sm text-faint">{tags.join(', ')}</p>}
+      <p class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+        <a href={entryHref(section, entry.id)} class="text-accent underline decoration-accent/30 underline-offset-4 hover:decoration-accent">Read more</a>
+        {links.map((l: { label: string; url: string }) => (
+        <a href={l.url} rel="noopener" class="text-muted underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent">{l.label}{l.external ? "↗" : undefined }</a>
+        ))}
+      </p>
+    </div>
+  </details>
+</li>
